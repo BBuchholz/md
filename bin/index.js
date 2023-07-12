@@ -23,22 +23,33 @@ const greetingText =
     "WELLcome 2 MyriaD MarkDown Matrix CLI \n" +
     "currently under construction... \nplease excuse our dust...";
 
-let output = "";
 
 if(options.filename){
-    
+
+   let output = "";    
    output += greetingText + "\n\n";
    output += `Inspection results for ${options.filename} in progress \n\n`;
    output += inspectFile(options.filename);
+   displayOutputBox(output);
     
 }else{
 
-   output += greetingText + "\n\n";
-   output += "Inspecting current directory\n\n";
-   output += inspectCurrentDir();
+   // let output = ''
+   // output += greetingText + "\n\n";
+   // output += "Inspecting current directory\n\n";
+   // output += inspectCurrentDir();
+   // displayOutputBox(output);   
+
+   inspectCurrentDir().then(inspectOutput => {
+
+      let finalOutput = '';
+      finalOutput += greetingText + "\n\n";
+      finalOutput += "Inspecting current directory\n\n";
+      finalOutput += inspectOutput;
+      displayOutputBox(finalOutput);
+   })
 }
 
-displayOutputBox(output);
 
 
 
