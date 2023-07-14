@@ -1,6 +1,8 @@
 import fsPromises from "fs/promises";
 import path from "path";
 
+import { verifyFileTag } from "./verifyFileTag.js";
+
 export async function getCurrentFiles() {
 
     const filesList = [];
@@ -15,7 +17,19 @@ export async function getCurrentFiles() {
         }
     })
 
-    console.log(filesList);
+    console.log("found " + filesList.length + " md files");
+    console.log("verifying files, this could take a while...");
 
-    return filesList
+    const verifiedFilesList = [];
+
+    for(const filename of filesList){
+
+        if(verifyFileTag(filename)){
+            
+            console.log('file: ' + filename + ' successfully verified for tag #current/toDo');
+            verifiedFilesList.push(filename);
+        }
+    }
+
+    return verifiedFilesList;
 }

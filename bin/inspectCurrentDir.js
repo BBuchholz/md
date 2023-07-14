@@ -3,6 +3,7 @@ import fs from "fs";
 // import path from "path";
 
 import { getCurrentFiles } from "./getCurrentFiles.js";
+import { verifyFileTag } from "./verifyFileTag.js";
 
 // adapted async methodology from stackoverflow at:
 // https://stackoverflow.com/a/72133314/670768
@@ -53,6 +54,8 @@ export async function inspectCurrentDir() {
     const indexFile = mdmdmDir + "/" + indexFileName;
     console.log("checking for " + indexFile);
 
+    let fileNeedsBuilding = false;
+
     try{
 
         if(fs.existsSync(indexFile)){
@@ -61,8 +64,59 @@ export async function inspectCurrentDir() {
             // ATTACHED TO A LOGIC BLOCK
             console.log("found " + indexFile);
             console.log("loading from file...");
-            console.log("verifying file...");
-            console.log("verification finished, found X files");
+
+            //TODO: read each file into a workspace list
+
+            const workspaceList = [];
+            const indexFileContents = fs.readFileSync(indexFile, 'utf-8');
+            
+            indexFileContents.split(/\r?\n/).forEach(line =>  {
+                
+                console.log(`found file: ${line}`);
+                workspaceList.push(line);
+            });
+
+            console.log("verifying files...");
+
+            //TODO: check each file contains the text "#current/toDo"
+
+            //////////////////////////////////////////////////
+            /// COPY THE BLOCK ABOVE FOR indexedFileContents
+            //////////////////////////////////////////////////
+            
+            const verifiedList = [];
+            let allVerified = true; //assume all will pass
+            
+            for(const indexedFileName of workspaceList) {
+
+                let thisFileIsTagged = verifyFileTag(indexedFileName);
+
+                if(!thisFileIsTagged){
+
+                    allVerified = false;
+
+                }else{
+
+                    verifiedList.push(indexedFileName);
+                }
+            }
+
+
+
+            //if is, continue
+            //if any are found out of sync,
+            //delete workspace file and recommend
+            //rerunning to recreate
+
+            console.log("verification finished, found " + verifiedList.length + " files");
+
+            if(!allVerified){
+
+                console.log('inconsistencies were found during verification (some files listed as tagged were not tagged) and so the list will be rebuilt (this may take a few moments)');
+                fileNeedsBuilding = true;
+                // await buildWorkspaceFile(indexFile);
+                // console.log('file rebuilt');
+            }
 
         }else{
 
@@ -70,27 +124,26 @@ export async function inspectCurrentDir() {
             // ATTACHED TO A LOGIC BLOCK
             console.log("couldn't find workspace file, building...");
 
-            const filesList = await getCurrentFiles();
-
-            // convert filesList to Content string
-            const contentString = filesList.join('\n');
-            
-            try {
-                
-                fs.writeFileSync(indexFile, contentString);
-
-                console.log("workspace file built with " + filesList.length + " files found");
-
-            } catch (err) {
-                
-                console.error("error writing workspace file: " + err);
-            }
+            fileNeedsBuilding = true;
+            // await buildWorkspaceFile(indexFile);
 
         }
     
     }catch(err){
 
         console.log("error accessing workspace file: " + err);
+    }
+
+    if(fileNeedsBuilding){
+
+        try{
+
+            await buildWorkspaceFile(indexFile);
+
+        }catch(err){
+            
+            console.log("error building file: " + err);
+        }
     }
 
     // const filenames = await fsPromises.readdir(process.cwd());
@@ -125,4 +178,23 @@ export async function inspectCurrentDir() {
     // }
 
     return output;
+}
+
+
+async function buildWorkspaceFile(indexFile) {
+    const filesList = await getCurrentFiles();
+
+    // convert filesList to Content string
+    const contentString = filesList.join('\n');
+
+    try {
+
+        fs.writeFileSync(indexFile, contentString);
+
+        console.log("workspace file built with " + filesList.length + " files found");
+
+    } catch (err) {
+
+        console.error("error writing workspace file: " + err);
+    }
 }
