@@ -11,45 +11,74 @@ const yargs = _yargs(hideBin(process.argv))
 
 // using advanced commander options
 // see https://github.com/yargs/yargs/blob/main/docs/advanced.md
-const options = yargs
+yargs
    .scriptName("md")
    .command({
-      command: '$0 [filename]', 
-      desc: 'inspect filename if specified, current dir if not'
+      command: '$0 inspect [filename]', 
+      desc: 'inspect filename if specified, current dir if not',
+      builder: {},
+      handler: (argv) => {
+         const greetingText = 
+            "WELLcome 2 MyriaD MarkDown Matrix CLI \n" +
+            "currently under construction... \n" +
+            "please excuse our dust...";
+
+         if(argv.filename){
+
+            let output = "";    
+            output += greetingText + "\n\n";
+            output += `Inspection results for ${argv.filename} in progress \n\n`;
+            output += inspectFile(argv.filename);
+            displayOutputBox(output);
+             
+         }else{
+         
+            // let output = ''
+            // output += greetingText + "\n\n";
+            // output += "Inspecting current directory\n\n";
+            // output += inspectCurrentDir();
+            // displayOutputBox(output);   
+         
+            inspectCurrentDir().then(inspectOutput => {
+         
+               let finalOutput = '';
+               finalOutput += greetingText + "\n\n";
+               finalOutput += "Inspecting current directory\n\n";
+               finalOutput += inspectOutput;
+               displayOutputBox(finalOutput);
+            })
+         }
+      }
    })
    .argv;
 
-const greetingText = 
-    "WELLcome 2 MyriaD MarkDown Matrix CLI \n" +
-    "currently under construction... \n" +
-    "please excuse our dust...";
 
 
-if(options.filename){
+// if(options.filename){
 
-   let output = "";    
-   output += greetingText + "\n\n";
-   output += `Inspection results for ${options.filename} in progress \n\n`;
-   output += inspectFile(options.filename);
-   displayOutputBox(output);
+//    let output = "";    
+//    output += greetingText + "\n\n";
+//    output += `Inspection results for ${options.filename} in progress \n\n`;
+//    output += inspectFile(options.filename);
+//    displayOutputBox(output);
     
-}else{
+// }else{
 
-   // let output = ''
-   // output += greetingText + "\n\n";
-   // output += "Inspecting current directory\n\n";
-   // output += inspectCurrentDir();
-   // displayOutputBox(output);   
+//    // let output = ''
+//    // output += greetingText + "\n\n";
+//    // output += "Inspecting current directory\n\n";
+//    // output += inspectCurrentDir();
+//    // displayOutputBox(output);   
 
-   inspectCurrentDir().then(inspectOutput => {
+//    inspectCurrentDir().then(inspectOutput => {
 
-      let finalOutput = '';
-      finalOutput += greetingText + "\n\n";
-      finalOutput += "Inspecting current directory\n\n";
-      finalOutput += inspectOutput;
-      displayOutputBox(finalOutput);
-   })
-}
+//       let finalOutput = '';
+//       finalOutput += greetingText + "\n\n";
+//       finalOutput += "Inspecting current directory\n\n";
+//       finalOutput += inspectOutput;
+//       displayOutputBox(finalOutput);
+//    })
+// }
 
 
 
