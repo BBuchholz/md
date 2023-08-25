@@ -21,7 +21,8 @@ const options = yargs
 
 const greetingText = 
     "WELLcome 2 MyriaD MarkDown Matrix CLI \n" +
-    "currently under construction... \nplease excuse our dust...";
+    "currently under construction... \n" +
+    "please excuse our dust...";
 
 
 if(options.filename){
