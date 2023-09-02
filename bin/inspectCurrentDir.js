@@ -4,6 +4,7 @@ import fs from "fs";
 
 import { getCurrentFiles } from "./getCurrentFiles.js";
 import { verifyFileTag } from "./verifyFileTag.js";
+import { chalkLog } from "./chalkLog.js";
 
 // adapted async methodology from stackoverflow at:
 // https://stackoverflow.com/a/72133314/670768
@@ -27,32 +28,32 @@ export async function inspectCurrentDir() {
     
     }catch(err){
 
-        console.log("error checking directory: " + err);
+        chalkLog("error checking directory: " + err);
     }
 
     if(!dirExists){
 
-        console.log("creating dir " + mdmdmDir);
+        chalkLog("creating dir " + mdmdmDir);
 
         try{
             
             fs.mkdirSync(mdmdmDir);
-            console.log("directory created");
+            chalkLog("directory created");
 
         }catch(err){
 
-            console.log("error creating directory: " + err);
+            chalkLog("error creating directory: " + err);
         }
 
     }else{
 
-        console.log("found dir " + mdmdmDir);
+        chalkLog("found dir " + mdmdmDir);
     }
     
 
     const indexFileName = "workspace.txt";
     const indexFile = mdmdmDir + "/" + indexFileName;
-    console.log("checking for " + indexFile);
+    chalkLog("checking for " + indexFile);
 
     let fileNeedsBuilding = false;
 
@@ -62,8 +63,8 @@ export async function inspectCurrentDir() {
 
             // EACH OF THESE LOG LINES SHOULD BE
             // ATTACHED TO A LOGIC BLOCK
-            console.log("found " + indexFile);
-            console.log("loading from file...");
+            chalkLog("found " + indexFile);
+            chalkLog("loading from file...");
 
             //TODO: read each file into a workspace list
 
@@ -72,11 +73,11 @@ export async function inspectCurrentDir() {
             
             indexFileContents.split(/\r?\n/).forEach(line =>  {
                 
-                console.log(`found file: ${line}`);
+                chalkLog(`found file: ${line}`);
                 workspaceList.push(line);
             });
 
-            console.log("verifying files...");
+            chalkLog("verifying files...");
 
             //TODO: check each file contains the text "#current/toDo"
 
@@ -108,21 +109,21 @@ export async function inspectCurrentDir() {
             //delete workspace file and recommend
             //rerunning to recreate
 
-            console.log("verification finished, found " + verifiedList.length + " files");
+            chalkLog("verification finished, found " + verifiedList.length + " files");
 
             if(!allVerified){
 
-                console.log('inconsistencies were found during verification (some files listed as tagged were not tagged) and so the list will be rebuilt (this may take a few moments)');
+                chalkLog('inconsistencies were found during verification (some files listed as tagged were not tagged) and so the list will be rebuilt (this may take a few moments)');
                 fileNeedsBuilding = true;
                 // await buildWorkspaceFile(indexFile);
-                // console.log('file rebuilt');
+                // chalkLog('file rebuilt');
             }
 
         }else{
 
             // EACH OF THESE LOG LINES SHOULD BE
             // ATTACHED TO A LOGIC BLOCK
-            console.log("couldn't find workspace file, building...");
+            chalkLog("couldn't find workspace file, building...");
 
             fileNeedsBuilding = true;
             // await buildWorkspaceFile(indexFile);
@@ -131,7 +132,7 @@ export async function inspectCurrentDir() {
     
     }catch(err){
 
-        console.log("error accessing workspace file: " + err);
+        chalkLog("error accessing workspace file: " + err);
     }
 
     if(fileNeedsBuilding){
@@ -142,7 +143,7 @@ export async function inspectCurrentDir() {
 
         }catch(err){
             
-            console.log("error building file: " + err);
+            chalkLog("error building file: " + err);
         }
     }
 
@@ -191,7 +192,7 @@ async function buildWorkspaceFile(indexFile) {
 
         fs.writeFileSync(indexFile, contentString);
 
-        console.log("workspace file built with " + filesList.length + " files found");
+        chalkLog("workspace file built with " + filesList.length + " files found");
 
     } catch (err) {
 
