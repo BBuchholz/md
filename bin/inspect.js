@@ -2,6 +2,7 @@
 import { chalkLog } from "./chalkLog.js";
 import { inspectFile } from "./inspectFile.js";
 import { inspectCurrentDir } from "./inspectCurrentDir.js";
+import { log } from "./log.js";
 
 export async function inspect(argv) {
     const greetingText = 
@@ -9,23 +10,21 @@ export async function inspect(argv) {
         "currently under construction... \n" +
         "please excuse our dust...";
 
-        if(argv.filename){
+    if(argv.filename){
 
-        let output = "";    
-        output += greetingText + "\n\n";
-        output += `Inspection results for ${argv.filename} in progress \n\n`;
-        output += inspectFile(argv.filename);
-        chalkLog(output);
-            
-        }else{  
+    let output = "";    
+    output += greetingText + "\n\n";
+    output += `Inspection results for ${argv.filename} in progress \n\n`;
+    output += inspectFile(argv.filename);
+    chalkLog(output);
+        
+    }else{  
+    
+        log("Inspecting current directory\n\n");
         
         inspectCurrentDir().then(inspectOutput => {
-        
-            let finalOutput = '';
-            finalOutput += greetingText + "\n\n";
-            finalOutput += "Inspecting current directory\n\n";
-            finalOutput += inspectOutput;
-            chalkLog(finalOutput);
+    
+            log(inspectOutput);
         })
     }
 }

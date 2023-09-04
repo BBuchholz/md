@@ -1,11 +1,11 @@
 import fs from 'fs';
-import { chalkLog } from './chalkLog.js';
+import { log } from './log.js';
 
 export function verifyFileTag(indexedFileName) {
     
     const indexedFile = process.cwd() + "/" + indexedFileName;
 
-    chalkLog('verifiying file ' + indexedFile);
+    log('verifiying file ' + indexedFile);
 
     const indexedFileContents = fs.readFileSync(indexedFile, 'utf-8');
 
@@ -15,7 +15,7 @@ export function verifyFileTag(indexedFileName) {
 
         if (line.includes("#current/toDo")) {
 
-            chalkLog(`found tag in line: ` + line);
+            log(`found tag in line: ` + line);
             thisFileIsTagged = true;
             break;
         }

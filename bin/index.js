@@ -47,4 +47,6 @@ yargs
          repair(argv)
       },
    })
+   .demandCommand()
+   .help()
    .argv;

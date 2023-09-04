@@ -1,10 +1,11 @@
 import fs from "fs";
-// import fsPromises from "fs/promises";
-// import path from "path";
+import fsPromises from "fs/promises";
+import path from "path";
 
-import { getCurrentFiles } from "./getCurrentFiles.js";
+import { log } from "./log.js";
 import { verifyFileTag } from "./verifyFileTag.js";
 import { chalkLog } from "./chalkLog.js";
+import { buildWorkspaceFile } from "./buildWorkspaceFile.js";
 
 // adapted async methodology from stackoverflow at:
 // https://stackoverflow.com/a/72133314/670768
@@ -33,12 +34,12 @@ export async function inspectCurrentDir() {
 
     if(!dirExists){
 
-        chalkLog("creating dir " + mdmdmDir);
+        log("creating dir " + mdmdmDir);
 
         try{
             
             fs.mkdirSync(mdmdmDir);
-            chalkLog("directory created");
+            log("directory created");
 
         }catch(err){
 
@@ -47,13 +48,13 @@ export async function inspectCurrentDir() {
 
     }else{
 
-        chalkLog("found dir " + mdmdmDir);
+        log("found dir " + mdmdmDir);
     }
     
 
     const indexFileName = "workspace.txt";
     const indexFile = mdmdmDir + "/" + indexFileName;
-    chalkLog("checking for " + indexFile);
+    log("checking for " + indexFile);
 
     let fileNeedsBuilding = false;
 
@@ -63,8 +64,8 @@ export async function inspectCurrentDir() {
 
             // EACH OF THESE LOG LINES SHOULD BE
             // ATTACHED TO A LOGIC BLOCK
-            chalkLog("found " + indexFile);
-            chalkLog("loading from file...");
+            log("found " + indexFile);
+            log("loading from file...");
 
             //TODO: read each file into a workspace list
 
@@ -73,11 +74,11 @@ export async function inspectCurrentDir() {
             
             indexFileContents.split(/\r?\n/).forEach(line =>  {
                 
-                chalkLog(`found file: ${line}`);
+                log(`found file: ${line}`);
                 workspaceList.push(line);
             });
 
-            chalkLog("verifying files...");
+            log("verifying files...");
 
             //TODO: check each file contains the text "#current/toDo"
 
@@ -109,11 +110,11 @@ export async function inspectCurrentDir() {
             //delete workspace file and recommend
             //rerunning to recreate
 
-            chalkLog("verification finished, found " + verifiedList.length + " files");
+            log("verification finished, found " + verifiedList.length + " files");
 
             if(!allVerified){
 
-                chalkLog('inconsistencies were found during verification (some files listed as tagged were not tagged) and so the list will be rebuilt (this may take a few moments)');
+                log('inconsistencies were found during verification (some files listed as tagged were not tagged) and so the list will be rebuilt (this may take a few moments)');
                 fileNeedsBuilding = true;
                 // await buildWorkspaceFile(indexFile);
                 // chalkLog('file rebuilt');
@@ -123,7 +124,7 @@ export async function inspectCurrentDir() {
 
             // EACH OF THESE LOG LINES SHOULD BE
             // ATTACHED TO A LOGIC BLOCK
-            chalkLog("couldn't find workspace file, building...");
+            log("couldn't find workspace file, building...");
 
             fileNeedsBuilding = true;
             // await buildWorkspaceFile(indexFile);
@@ -147,55 +148,38 @@ export async function inspectCurrentDir() {
         }
     }
 
-    // const filenames = await fsPromises.readdir(process.cwd());
+    const filenames = await fsPromises.readdir(process.cwd());
     
-    let output = 'output needs revision';
-    // let count = 0;
+    let output = '';
+    let count = 0;
 
-    // filenames.forEach(file => {
+    filenames.forEach(file => {
         
-    //     if(path.extname(file) == ".md") {
+        if(path.extname(file) == ".md") {
             
-    //         count++;
+            count++;
             
-    //         if(count < 20){
+            if(count < 20){
 
-    //             output += file + "\n"
-    //         }
-    //     }
-    // })
+                output += file + "\n"
+            }
+        }
+    })
 
-    // if(count == 0){
+    if(count == 0){
         
-    //     output = "No markdown files found.";
+        output = "No markdown files found.";
 
-    // }else{
+    }else{
 
-    //     let outputHeader = "Markdown files found: ";
-    //     outputHeader += count + "\n\n";
-    //     outputHeader += "Including:\n\n"; 
-    //     output = outputHeader + output;
+        let outputHeader = "Markdown files found: ";
+        outputHeader += count + "\n\n";
+        outputHeader += "Including:\n\n"; 
+        output = outputHeader + output;
 
-    // }
+    }
 
     return output;
 }
 
 
-async function buildWorkspaceFile(indexFile) {
-    const filesList = await getCurrentFiles();
-
-    // convert filesList to Content string
-    const contentString = filesList.join('\n');
-
-    try {
-
-        fs.writeFileSync(indexFile, contentString);
-
-        chalkLog("workspace file built with " + filesList.length + " files found");
-
-    } catch (err) {
-
-        console.error("error writing workspace file: " + err);
-    }
-}
