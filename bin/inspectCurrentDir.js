@@ -65,20 +65,11 @@ export async function inspectCurrentDir() {
             // EACH OF THESE LOG LINES SHOULD BE
             // ATTACHED TO A LOGIC BLOCK
             log("found " + indexFile);
-            log("loading from file...");
+            log("loading indexeds files for analysis...");
 
-            //TODO: read each file into a workspace list
+            const workspaceList = loadIndexedFiles(indexFile);
 
-            const workspaceList = [];
-            const indexFileContents = fs.readFileSync(indexFile, 'utf-8');
-            
-            indexFileContents.split(/\r?\n/).forEach(line =>  {
-                
-                log(`found file: ${line}`);
-                workspaceList.push(line);
-            });
-
-            log("verifying files...");
+            log("analysing files...");
 
             //TODO: check each file contains the text "#current/toDo"
 
@@ -86,22 +77,10 @@ export async function inspectCurrentDir() {
             /// COPY THE BLOCK ABOVE FOR indexedFileContents
             //////////////////////////////////////////////////
             
-            const verifiedList = [];
-            let allVerified = true; //assume all will pass
-            
-            for(const indexedFileName of workspaceList) {
-
-                let thisFileIsTagged = verifyFileTag(indexedFileName);
-
-                if(!thisFileIsTagged){
-
-                    allVerified = false;
-
-                }else{
-
-                    verifiedList.push(indexedFileName);
-                }
-            }
+            var { 
+                verifiedList, 
+                allVerified 
+            }   = analyzeFiles(workspaceList);
 
 
 
@@ -158,6 +137,7 @@ export async function inspectCurrentDir() {
         if(path.extname(file) == ".md") {
             
             count++;
+            log('found ' + count + ' files');
             
             if(count < 20){
 
@@ -168,18 +148,50 @@ export async function inspectCurrentDir() {
 
     if(count == 0){
         
-        output = "No markdown files found.";
+         log("No markdown files found.");
 
     }else{
 
-        let outputHeader = "Markdown files found: ";
-        outputHeader += count + "\n\n";
-        outputHeader += "Including:\n\n"; 
-        output = outputHeader + output;
+        log("Markdown files found: " + count);
+        log("Including:"); 
+        log(output);
 
     }
 
-    return output;
 }
 
+
+function analyzeFiles(workspaceList) {
+    const verifiedList = [];
+    let allVerified = true; //assume all will pass
+
+    for (const indexedFileName of workspaceList) {
+
+        let thisFileIsTagged = verifyFileTag(indexedFileName);
+
+        if (!thisFileIsTagged) {
+
+            allVerified = false;
+
+        } else {
+
+            verifiedList.push(indexedFileName);
+        }
+    }
+    return { verifiedList, allVerified };
+}
+
+function loadIndexedFiles(indexFile) {
+
+    //TODO: read each file into a workspace list
+    const workspaceList = [];
+    const indexFileContents = fs.readFileSync(indexFile, 'utf-8');
+
+    indexFileContents.split(/\r?\n/).forEach(line => {
+
+        log(`found file: ${line}`);
+        workspaceList.push(line);
+    });
+    return workspaceList;
+}
 

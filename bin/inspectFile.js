@@ -1,17 +1,15 @@
 import path from "path";
+import { log } from "./log.js"
 
-export function inspectFile(file) {
-
-    let output = "";
+export async function inspectFile(file) {
 
     if(path.extname(file) == ".md") {
         
-        output += file + " is a markdown file";
+        log(file + " is a markdown file");
 
     }else{
 
-        output += file + " is not a markdown file";
+        log(file + " is not a markdown file");
     }    
-
-    return output;
+    
 }
