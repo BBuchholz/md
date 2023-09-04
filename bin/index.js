@@ -7,6 +7,7 @@ import { hideBin } from 'yargs/helpers';
 import { validate } from "./validate.js"
 import { inspect } from "./inspect.js"
 import { audit } from "./audit.js"
+import { repair } from "./repair.js"
 
 const yargs = _yargs(hideBin(process.argv))
 
@@ -15,21 +16,35 @@ const yargs = _yargs(hideBin(process.argv))
 yargs
    .scriptName("md")
    .command({
-      command: '$0 validate [filename]', 
+      command: 'validate [filename]', 
       desc: 'validate filename if specified, current dir if not',
       builder: {},
-      handler: validate
+      handler: (argv) => {
+         validate(argv)
+      },
    })
    .command({
-      command: '$0 inspect [filename]', 
+      command: 'inspect [filename]', 
       desc: 'inspect filename if specified, current dir if not',
       builder: {},
-      handler: inspect
+      handler: (argv) => {
+         inspect(argv)
+      },
    })
    .command({
-      command: '$0 audit [filename]', 
+      command: 'audit [filename]', 
       desc: 'audit filename if specified, current dir if not',
       builder: {},
-      handler: audit
+      handler: (argv) => {
+         audit(argv)
+      },
+   })
+   .command({
+      command: 'repair [filename]', 
+      desc: 'repair filename if specified, current dir if not',
+      builder: {},
+      handler: (argv) => {
+         repair(argv)
+      },
    })
    .argv;
