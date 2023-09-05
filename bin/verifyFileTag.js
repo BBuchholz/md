@@ -7,7 +7,8 @@ export function verifyFileTag(indexedFileName) {
 
     log('verifiying file ' + indexedFile);
 
-    const indexedFileContents = fs.readFileSync(indexedFile, 'utf-8');
+    const indexedFileContents = 
+        fs.readFileSync(indexedFile, 'utf-8');
 
     let thisFileIsTagged = false;
 

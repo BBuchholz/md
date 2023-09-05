@@ -6,45 +6,23 @@ import { log } from "./log.js";
 import { verifyFileTag } from "./verifyFileTag.js";
 import { chalkLog } from "./chalkLog.js";
 import { buildWorkspaceFile } from "./buildWorkspaceFile.js";
+import { auditDirectoryExists } from "./audit/auditDirectoryExists.js";
+import { getMdmdmDir } from "./configTools.js";
 
 // adapted async methodology from stackoverflow at:
 // https://stackoverflow.com/a/72133314/670768
 
 export async function inspectCurrentDir() {
 
-    const mdmdmDir = process.cwd() + "/.mdmdm";
+    const mdmdmDir = getMdmdmDir();
 
-    let dirExists = false;
-
-    try{
-
-        if(fs.existsSync(mdmdmDir)){
-
-            dirExists = true;
-
-        }else{
-
-            dirExists = false;
-        }
-    
-    }catch(err){
-
-        chalkLog("error checking directory: " + err);
-    }
+    let dirExists = auditDirectoryExists(mdmdmDir);
 
     if(!dirExists){
 
         log("creating dir " + mdmdmDir);
 
-        try{
-            
-            fs.mkdirSync(mdmdmDir);
-            log("directory created");
-
-        }catch(err){
-
-            chalkLog("error creating directory: " + err);
-        }
+        repairDirectoryExists(mdmdmDir);
 
     }else{
 
@@ -62,32 +40,18 @@ export async function inspectCurrentDir() {
 
         if(fs.existsSync(indexFile)){
 
-            // EACH OF THESE LOG LINES SHOULD BE
-            // ATTACHED TO A LOGIC BLOCK
             log("found " + indexFile);
-            log("loading indexeds files for analysis...");
+            log("loading indexed files for analysis...");
 
             const workspaceList = loadIndexedFiles(indexFile);
 
             log("analysing files...");
-
-            //TODO: check each file contains the text "#current/toDo"
-
-            //////////////////////////////////////////////////
-            /// COPY THE BLOCK ABOVE FOR indexedFileContents
-            //////////////////////////////////////////////////
             
             var { 
                 verifiedList, 
                 allVerified 
             }   = analyzeFiles(workspaceList);
 
-
-
-            //if is, continue
-            //if any are found out of sync,
-            //delete workspace file and recommend
-            //rerunning to recreate
 
             log("verification finished, found " + verifiedList.length + " files");
 
@@ -160,6 +124,17 @@ export async function inspectCurrentDir() {
 
 }
 
+function repairDirectoryExists(mdmdmDir) {
+    try {
+
+        fs.mkdirSync(mdmdmDir);
+        log("directory created");
+
+    } catch (err) {
+
+        chalkLog("error creating directory: " + err);
+    }
+}
 
 function analyzeFiles(workspaceList) {
     const verifiedList = [];
@@ -189,8 +164,12 @@ function loadIndexedFiles(indexFile) {
 
     indexFileContents.split(/\r?\n/).forEach(line => {
 
-        log(`found file: ${line}`);
-        workspaceList.push(line);
+        // verify not empty or whitespace
+        if(line.trim()){
+
+            log(`found file: ${line}`);
+            workspaceList.push(line);
+        }
     });
     return workspaceList;
 }
