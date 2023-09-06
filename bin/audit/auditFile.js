@@ -5,6 +5,13 @@ export async function auditFile(file) {
 
     log('audit file goes here')
 
-    return false
+    let auditReport = {
+        'uuid': '',
+        'file': '',
+        'report_name': '',
+        'has_conflicts': false,
+        'conflict_files': [],
+    }
 
+    return auditReport
 }
