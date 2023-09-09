@@ -4,7 +4,7 @@ import { log } from '../log.js';
 export function getLines(file) {
     const fileToReadIntoLines = process.cwd() + "/" + file;
 
-    log('reading file ' + fileToReadIntoLines);
+    // log('reading file ' + fileToReadIntoLines);
 
     let fileToReadIntoLinesContents = fs.readFileSync(fileToReadIntoLines, 'utf-8');
 
@@ -12,13 +12,13 @@ export function getLines(file) {
 
     for (const line of fileToReadIntoLinesContents.split(/\r?\n/)) {
 
-        log('processing line: ' + line);
+        // log('processing line: ' + line);
 
         lines.push(line);
 
 
     }
 
-    log('lines processed: ' + lines.length);
+    // log('lines processed: ' + lines.length);
     return lines;
 }

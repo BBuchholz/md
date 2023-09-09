@@ -4,6 +4,9 @@ import { auditFile } from "./auditFile";
 test('generates audit report from test file', async () => {
     const report = await auditFile('test.md')
     expect(report.file).toBe('test.md')
+
+    expect(report.duplicate_lines.length).toBe(2)
+
     // use: https://stackoverflow.com/a/13653180/670768 for uuid validation
     // expect(report.uuid).toBe('xxx')
     // expect(report.conflict_files).toBe('test.md')

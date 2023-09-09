@@ -11,6 +11,7 @@ export function extractMdObj(file) {
         fm: {},
         contents: [],
         issues: [] ,
+        lines: lines,
     }
 
     let inFm = false;
@@ -19,24 +20,24 @@ export function extractMdObj(file) {
     for(const line of lines){
 
 
-        log('\nprocessing line: ' + line)
+        // log('\nprocessing line: ' + line)
 
         if(!closedFm){
 
-            log('fm not closed')
+            // log('fm not closed')
 
             if(line.startsWith('---')){
 
-                log('line starts with ---')
+                // log('line starts with ---')
 
                 if(!inFm){
 
-                    log('found opening fm')
+                    // log('found opening fm')
                     inFm = true
 
                 }else{
 
-                    log('found closing fm')
+                    // log('found closing fm')
                     closedFm = true
                 }
 
@@ -54,7 +55,7 @@ export function extractMdObj(file) {
             } else if(line.trim()) {
 
                 const issue = 'unrecognized non-empty line in front matter'
-                log(issue + ', logging issue')
+                // log(issue + ', logging issue')
                 mdObj.issues.push(issue)
             }
 
