@@ -16,12 +16,12 @@ export async function auditFile(file) {
     // const uuid = mdObj.fm['uuid']
 
     // [[[NEEDED]]] or xxxx-&c.
-    const auditedUuid = auditUuid('xxxx')
+    //const auditedUuid = auditUuid('xxxx')
 
     const auditedLines = auditDuplicateLines(mdObj)
 
     let auditReport = {
-        'uuid': auditedUuid,
+        // 'uuid': auditedUuid,
         'file': file,
         'report_name': '',
         'has_conflicts': false,
@@ -33,6 +33,8 @@ export async function auditFile(file) {
 }
 
 export async function auditUuid(uuid) { 
+
+    
 
     return '[[[NEEDED]]]'
 }

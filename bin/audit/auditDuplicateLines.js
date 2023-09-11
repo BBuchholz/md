@@ -1,3 +1,4 @@
+import { log } from '../log.js'
 
 /** 
  * finds duplicate lines and sends back an array of objects 
@@ -44,7 +45,7 @@ export function auditDuplicateLines(mdObj){
 
             for(let i = 1; i < lineCounts.length; i++){
                 
-                linesDuplicated += lineCounts[i]
+                linesDuplicated += (lineCounts[i] + 1) //line index is zero based
 
                 if(i < lineCounts.length - 2){
 
@@ -67,12 +68,14 @@ export function auditDuplicateLines(mdObj){
                 
             msg += ' line '
 
-            msg += lineCounts[0] + ": "
+            msg += (lineCounts[0] + 1) + ": "
 
             msg += lineValue
             
 
             duplicates.push(msg)
+
+            log(msg)
         }
     }
 
