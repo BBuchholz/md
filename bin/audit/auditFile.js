@@ -2,6 +2,7 @@ import { readFile } from 'fs'
 import { log } from '../log.js'
 import { extractMdObj } from './extractMdObj.js';
 import { auditDuplicateLines } from './auditDuplicateLines.js'
+import { auditUuid } from './auditUuid.js';
 
 export async function auditFile(file) {
 
@@ -16,7 +17,7 @@ export async function auditFile(file) {
     // const uuid = mdObj.fm['uuid']
 
     // [[[NEEDED]]] or xxxx-&c.
-    //const auditedUuid = auditUuid('xxxx')
+    const auditedUuid = auditUuid('xxxx')
 
     const auditedLines = auditDuplicateLines(mdObj)
 
@@ -32,9 +33,3 @@ export async function auditFile(file) {
     return auditReport
 }
 
-export async function auditUuid(uuid) { 
-
-    
-
-    return '[[[NEEDED]]]'
-}

@@ -8,9 +8,9 @@ test('generates audit report from test file', async () => {
     const dLineReport = auditDuplicateLines(mdObj);
     expect(dLineReport.length).toBe(2)
     expect(dLineReport[0]).toBe(
-        'lines 8, and 10 duplicate line 4: a duplicated line')
+        'lines 9, and 11 duplicate line 5: a duplicated line')
     expect(dLineReport[1]).toBe(
-        'line 12 duplicates line 6: another duplicate')
+        'line 13 duplicates line 7: another duplicate')
 
     // const mdObj2 = extractMdObj('testWithFM.md')
     // expect(mdObj2.fm['uuid']).toBe('NOTSET')
