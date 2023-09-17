@@ -1,8 +1,11 @@
 import { expect, test } from "vitest";
 import { removeCompleted } from "./removeCompleted";
+import { extractMdObjFromFile } from "../audit/extractMdObj";
 
 test('generates audit report from test file', async () => {
-    const mdObj = extractMdObj('test.md')
-    const newMdObj = removeCompleted(mdObj)
-    expect(newMdObj.contents[0]).toContain('A test markdown fiddle -- TODO: IMPLEMENT TEST HERE')
+    const mdObj = extractMdObjFromFile('testWithCompleted.md')
+    expect(mdObj.lines.length).toBe(13)
+    // test file has three completed lines
+    const newMdObj = await removeCompleted(mdObj)
+    expect(newMdObj.lines.length).toBe(10)
 })

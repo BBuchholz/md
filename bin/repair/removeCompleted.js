@@ -11,7 +11,7 @@ export async function removeCompleted(mdObj) {
   let newLines = []
 
   for(const line of mdObj.lines){
-    if(line.trim().startsWith('- [x] ')){
+    if(!line.trim().startsWith('- [x] ')){
       newLines.push(line)
     }
   }
